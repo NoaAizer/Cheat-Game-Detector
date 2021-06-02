@@ -29,7 +29,7 @@ from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D
 from keras import optimizers
 
-
+SEED = 1
 
 def CNN_model():
     # Building our model
@@ -222,7 +222,7 @@ def read_data():
     df = pd.concat([df_female, df_male], ignore_index=True)
 
     # Randomizing our files to be able to split into train, validation and test
-    df = df.sample(frac=1, random_state=42).reset_index(drop=True)
+    df = df.sample(frac=1, random_state=SEED).reset_index(drop=True)
     df_train = df[:767]
     df_train['label'].value_counts(normalize=True)
     df_validation = df[767:959]
@@ -256,7 +256,7 @@ def read_data():
     # df = pd.concat([df_female, df_male], ignore_index=True)
     #
     # # Randomizing our files to be able to split into train, validation and test
-    # df = df.sample(frac=1, random_state=42).reset_index(drop=True)
+    # df = df.sample(frac=1, random_state=SEED).reset_index(drop=True)
     # df_train = df[:892]
     # df_train['label'].value_counts(normalize=True)
     # df_validation = df[892:1127]
@@ -290,7 +290,7 @@ def read_data():
     # df = pd.concat([df_female, df_male], ignore_index=True)
     #
     # # Randomizing our files to be able to split into train, validation and test
-    # df = df.sample(frac=1, random_state=42).reset_index(drop=True)
+    # df = df.sample(frac=1, random_state=SEED).reset_index(drop=True)
     # df_train = df[:631]
     # df_train['label'].value_counts(normalize=True)
     # df_validation = df[631:789]
@@ -323,8 +323,7 @@ def read_data():
     # df = pd.concat([df_female, df_male], ignore_index=True)
     #
     # # Randomizing our files to be able to split into train, validation and test
-    # df = df.sample(frac=1, random_state=42).reset_index(drop=True)
-    # cv = KFold(n_splits=5, random_state=1, shuffle=True)
+    # df = df.sample(frac=1, random_state=SEED).reset_index(drop=True)
     # df_train = df[:448]
     # df_train['label'].value_counts(normalize=True)
     # df_validation = df[448:561]
@@ -356,7 +355,7 @@ def read_data():
     # df = pd.concat([df_female, df_male], ignore_index=True)
     #
     # # Randomizing our files to be able to split into train, validation and test
-    # df = df.sample(frac=1, random_state=42).reset_index(drop=True)
+    # df = df.sample(frac=1, random_state=SEED).reset_index(drop=True)
     # cv = KFold(n_splits=5, random_state=1, shuffle=True)
     # df_train = df[:318]
     # df_train['label'].value_counts(normalize=True)
@@ -389,7 +388,7 @@ def read_data():
     # df = pd.concat([df_female, df_male], ignore_index=True)
     #
     # # Randomizing our files to be able to split into train, validation and test
-    # df = df.sample(frac=1, random_state=42).reset_index(drop=True)
+    # df = df.sample(frac=1, random_state=SEED).reset_index(drop=True)
     # cv = KFold(n_splits=5, random_state=1, shuffle=True)
     # df_train = df
     # df_train['label'].value_counts(normalize=True)
@@ -419,7 +418,7 @@ def read_data():
     # df2 = pd.concat([df_female2, df_male2], ignore_index=True)
     #
     # # Randomizing our files to be able to split into train, validation and test
-    # df2 = df2.sample(frac=1, random_state=42).reset_index(drop=True)
+    # df2 = df2.sample(frac=1, random_state=SEED).reset_index(drop=True)
     # cv = KFold(n_splits=5, random_state=1, shuffle=True)
     # df_validation = df2
     # df_validation['label'].value_counts(normalize=True)
@@ -461,10 +460,10 @@ def read_data():
     #
     # df = pd.concat([df_female, df_male], ignore_index=True)  # HEBREW- TRAIN
     # dfENG = pd.concat([df_femaleENG, df_maleENG], ignore_index=True)  # ENGLISH
-    # dfENG = dfENG.sample(frac=1, random_state=42).reset_index(drop=True)
+    # dfENG = dfENG.sample(frac=1, random_state=SEED).reset_index(drop=True)
     # df = pd.concat([df, dfENG[:318]], ignore_index=True)
     # # Randomizing our files to be able to split into train, validation and test
-    # df = df.sample(frac=1, random_state=42).reset_index(drop=True)  #train
+    # df = df.sample(frac=1, random_state=SEED).reset_index(drop=True)  #train
     # df_train = df
     # df_train['label'].value_counts(normalize=True)
     # df_validation = dfENG[318:398]
@@ -507,10 +506,10 @@ def read_data():
     #
     # df = pd.concat([df_female, df_male], ignore_index=True)  # HEBREW- TRAIN
     # dfENG = pd.concat([df_femaleENG, df_maleENG], ignore_index=True)  # ENGLISH
-    # dfENG = dfENG.sample(frac=1, random_state=42).reset_index(drop=True)
+    # dfENG = dfENG.sample(frac=1, random_state=SEED).reset_index(drop=True)
     # df = pd.concat([df, dfENG[:369]], ignore_index=True)
     # # Randomizing our files to be able to split into train, validation and test
-    # df = df.sample(frac=1, random_state=42).reset_index(drop=True)  # train
+    # df = df.sample(frac=1, random_state=SEED).reset_index(drop=True)  # train
     # df_train = df
     # df_train['label'].value_counts(normalize=True)
     # df_validation = dfENG[369:561]
@@ -549,7 +548,7 @@ def cnn_preprocess(train, val):
         class_mode="categorical",
         target_size=(64, 64))
 
-    # plt.close()!!!!!!!!
+    plt.close()
     # gc.collect()!!!!!
     return train_generator, val_generator
 
@@ -774,14 +773,12 @@ def trainNN(df_tarin, df_val):
 
 
 def main():
-    random.seed(1234);
+    random.seed(SEED);
     df_tarin, df_val = read_data()
     trainNN(df_tarin, df_val)
-    # trainCRNN(df_tarin, df_val)
+    trainCRNN(df_tarin, df_val)
     trainCNN(df_tarin, df_val)
 
-    # Set figure size.
-    plt.figure(figsize=(12, 8))
 
     # Set title
     plt.title('Training and Validation Accuracy by Epoch', fontsize=25)

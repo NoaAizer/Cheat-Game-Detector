@@ -8,9 +8,14 @@ from keras_preprocessing.image import ImageDataGenerator
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix
 from sklearn.model_selection import KFold, cross_val_score, StratifiedKFold
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.svm import SVR
 import numpy as np
+from tensorflow.python.keras.callbacks import ModelCheckpoint
+
+from tensorflow.python.keras.models import load_model, Sequential
 
 import portfolio_model
+SEED =1
 
 
 def get_results(model,X,Y,test):
@@ -38,7 +43,7 @@ def NN(df):
     # model = load_model(model_path, compile=True, custom_objects=None)
 
     # define 5-fold cross validation test harness
-    kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=1)
+    kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=SEED)
     cvscores = []
     models = [[0,0],[0,0]]
     for train, test in kfold.split(X, np.argmax(Y, axis=1)):
@@ -67,7 +72,6 @@ def NN_2_lan(df_train , df_test):
     X, Y = portfolio_model.nn_preprocess_step(df_train, "train_features")
     ss = StandardScaler()
     X = ss.fit_transform(X)
-
     X2, Y2 = portfolio_model.nn_preprocess_step(df_test, "test_features")
     ss = StandardScaler()
     X2 = ss.fit_transform(X2)
@@ -76,7 +80,7 @@ def NN_2_lan(df_train , df_test):
     # model = load_model(model_path, compile=True, custom_objects=None)
 
     # define 5-fold cross validation test harness
-    kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=1)
+    kfold = StratifiedKFold(n_splits=5,random_state=SEED,shuffle=True)
     cvscores = []
     models = [[0,0],[0,0]]
     for train, test in kfold.split(X2,np.argmax(Y2, axis=1)):
@@ -123,7 +127,7 @@ def CNN(df):
     #     class_mode="categorical",
     #     target_size=(64, 64))
     # define 5-fold cross validation test harness
-    kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=SEED)
     #kfold.get_n_splits(df_generator)
     X= df.file
     Y= df.label
@@ -372,7 +376,7 @@ def read_data_heb_heb():
     df = pd.concat([df_female, df_male], ignore_index=True)
 
     # Randomizing our files to be able to split into train, validation and test
-    df = df.sample(frac=1, random_state=42).reset_index(drop=True)
+    df = df.sample(frac=1, random_state=SEED).reset_index(drop=True)
     df['label'].value_counts(normalize=True)
     return df
 
@@ -404,12 +408,11 @@ def read_data_eng_eng():
     df = pd.concat([df_female, df_male], ignore_index=True)
 
     # Randomizing our files to be able to split into train, validation and test
-    df = df.sample(frac=1, random_state=42).reset_index(drop=True)
+    df = df.sample(frac=1, random_state=SEED).reset_index(drop=True)
     df['label'].value_counts(normalize=True)
     return df
 
 def read_data_eng_heb():
-
 
     filelist_train_true = os.listdir('data/heb_claims/TRUE')
     # read them into pandas
@@ -436,8 +439,7 @@ def read_data_eng_heb():
     df = pd.concat([df_female, df_male], ignore_index=True)
 
     # Randomizing our files to be able to split into train, validation and test
-    df = df.sample(frac=1, random_state=42).reset_index(drop=True)
-    cv = KFold(n_splits=5, random_state=1, shuffle=True)
+    df = df.sample(frac=1, random_state=SEED).reset_index(drop=True)
     df_train = df
     df_train['label'].value_counts(normalize=True)
     # /////////////////////////////
@@ -466,15 +468,15 @@ def read_data_eng_heb():
     df2 = pd.concat([df_female2, df_male2], ignore_index=True)
 
     # Randomizing our files to be able to split into train, validation and test
-    df2 = df2.sample(frac=1, random_state=42).reset_index(drop=True)
-    cv = KFold(n_splits=5, random_state=1, shuffle=True)
+    df2 = df2.sample(frac=1, random_state=SEED).reset_index(drop=True)
+    cv = KFold(n_splits=5, random_state= SEED, shuffle=True)
     df_validation = df2
     df_validation['label'].value_counts(normalize=True)
     return df_train ,df_validation
 
 
 
-def read_data2(): #clean
+def read_data2(): #cleaned- data (969)
     true_clean_dir = "C:/Users/noaiz/Desktop/claims/DATA/true_claims/"
     false_clean_dir = "C:/Users/noaiz/Desktop/claims/DATA/false_claims/"
     # list the files
@@ -506,21 +508,25 @@ def read_data2(): #clean
 
 
 def main():
-    random.seed(1234);
-    df = read_data_out_of_game()
-   # df_train ,df_test = read_data_eng_heb()
+    random.seed(SEED)
+    #df = read_data_out_of_game()
+    df = read_data() #read all data (959)
+   # df_train ,df_test = read_data_eng_heb() // split to train test
 
     #NN
     print("---------------------  NN ---------------------")
-    NN(df)
+    NN( df)
+    #NN_2_lan( df_train ,df_test) // split to train test
 
     # # NN
     print("---------------------  CNN  ---------------------")
-    CNN(df)
+    #CNN( df_train ,df_test)
+    #CNN_2_lan( df_train ,df_test) // split to train test
 
     # # NN
     print("---------------------  CRNN  ---------------------")
-    CRNN(df)
+    #CRNN( df_train ,df_test)
+    #CRNN_2_lan( df_train ,df_test) // split to train test
 
 
 if __name__ == "__main__":
