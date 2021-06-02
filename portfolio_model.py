@@ -548,7 +548,7 @@ def cnn_preprocess(train, val):
         class_mode="categorical",
         target_size=(64, 64))
 
-    plt.close()
+    #plt.close()
     # gc.collect()!!!!!
     return train_generator, val_generator
 
